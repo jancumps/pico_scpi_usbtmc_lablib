@@ -35,10 +35,18 @@
     {.pattern = "STATus:QUEStionable:ENABle", .callback = SCPI_StatusQuestionableEnable,}, \
     {.pattern = "STATus:QUEStionable:ENABle?", .callback = SCPI_StatusQuestionableEnableQ,}, \
  \
-    {.pattern = "STATus:PRESet", .callback = SCPI_StatusPreset,},
+    {.pattern = "STATus:PRESet", .callback = SCPI_StatusPreset,}, \
+    /* VISA commands */  \
+    /* support VISA ASSERT TRIGGER */  \
+    /* https://www.ni.com/docs/en-US/bundle/labview-api-ref/page/functions/visa-assert-trigger.html */  \
+    { .pattern = "*TRG", .callback = SCPI_VisaTrg,},
 
 
 scpi_result_t My_CoreTstQ(scpi_t * context);
+scpi_result_t SCPI_VisaTrg(scpi_t * context);
 
+void doTrigger();
+
+scpi_bool_t scpi_instrument_input(const char * data, int len);
 
 #endif // SCPI_SCPI_BASE_H
