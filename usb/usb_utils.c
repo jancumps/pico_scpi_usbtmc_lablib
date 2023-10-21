@@ -7,6 +7,7 @@
 #include "bsp/board.h"
 
 
+#include "bsp/board.h"
 
 //--------------------------------------------------------------------+
 // MACRO CONSTANT TYPEDEF PROTYPES
