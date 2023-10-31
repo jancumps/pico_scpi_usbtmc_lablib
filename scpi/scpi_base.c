@@ -2,6 +2,7 @@
 
 #include "scpi-def.h"
 #include "usb/usbtmc_app.h"
+#include "pico/unique_id.h"
 
 /**
  * Reimplement IEEE488.2 *TST?
@@ -62,15 +63,24 @@ scpi_error_t scpi_error_queue_data[SCPI_ERROR_QUEUE_SIZE];
 
 // init helper for this instrument
 void scpi_instrument_init() {
+    // buffer to hold flash ID
+    static char serial[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
+    static bool unique_initialised = false;
+    if (! unique_initialised) {
+        pico_get_unique_board_id_string(serial, sizeof(serial));
+        unique_initialised = true;
+    }
+
     initInstrument(); // if you prefer no dependency on the gpio_utils in main,
               // you could move this call into the scpi_instrument_init() body.
               // like I did here
+
     
      SCPI_Init(&scpi_context,
              scpi_commands,
              &scpi_interface,
              scpi_units_def,
-             SCPI_IDN1, SCPI_IDN2, SCPI_IDN3, SCPI_IDN4,
+             SCPI_IDN1, SCPI_IDN2, serial, SCPI_IDN4,
              scpi_input_buffer, SCPI_INPUT_BUFFER_LENGTH,
              scpi_error_queue_data, SCPI_ERROR_QUEUE_SIZE);
 
