@@ -24,4 +24,4 @@ target_include_directories(pico_scpi_usbtmc_lablib INTERFACE
 
 )
 
-target_link_libraries(pico_unique_id INTERFACE tinyusb_device tinyusb_board)
+target_link_libraries(pico_scpi_usbtmc_lablib INTERFACE tinyusb_device tinyusb_board)
