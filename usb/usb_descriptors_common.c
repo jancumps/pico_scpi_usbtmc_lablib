@@ -27,17 +27,26 @@
 #include "class/usbtmc/usbtmc.h"
 #include "usb/usbtmc_device_custom.h"
 
-/* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
+/* 
+ * The owner of VID=0x1209 has generously allowed open-source projects to use their VID code.
+ * See https://pid.codes/1209/
+ */
+#define USB_VID   0x1209
+
+/* 
+ * A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
  *
  * Auto ProductID layout's Bitmap:
  *   [MSB]         HID | MSC | CDC          [LSB]
+ * 
+ * This project is not formally recognized by pid.codes (see https://pid.codes/howto/),
+ * but it looks like PID=0x41C0 is available and is shaped like the word PICO, which is fun.
  */
 #define _PID_MAP(itf, n)  ( (CFG_TUD_##itf) << (n) )
-#define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
+#define USB_PID           (0x41C0 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
                            _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
 
-#define USB_VID   0xCafe
 #define USB_BCD   0x0200
 
 //--------------------------------------------------------------------+
