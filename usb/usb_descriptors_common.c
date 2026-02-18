@@ -27,18 +27,42 @@
 #include "class/usbtmc/usbtmc.h"
 #include "usb/usbtmc_device_custom.h"
 
-/* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
+/* 
+ * The owner of VID=0x1209 has generously allowed open-source projects to use their VID code.
+ * See https://pid.codes/1209/
+ */
+#define USB_VID   0x1209
+
+/* 
+ * A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
  *
  * Auto ProductID layout's Bitmap:
  *   [MSB]         HID | MSC | CDC          [LSB]
+ * 
+ * This project is not formally recognized by pid.codes (see https://pid.codes/howto/),
+ * but it looks like PID=0x41C0 is available and is shaped like the word PICO, which is fun.
  */
 #define _PID_MAP(itf, n)  ( (CFG_TUD_##itf) << (n) )
-#define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
+#define USB_PID           (0x41C0 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
                            _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
 
-#define USB_VID   0xCafe
-#define USB_BCD   0x0200
+/* USB device version number (BCD)
+ * 
+ * It's a bit unfortunate that the USB device version is set here,
+ * because this is supposed to be a library usable by various applications.
+ * It would be better if they each set their own USB device version.
+ * However, in practice there's just the one consumer, pico_scpi_usbtmc_labtool.
+ * So it makes sense to use that version number here.
+ * 
+ * I was unable to find a version code for pico_scpi_usbtmc_labtool or pico_scpi_usbtmc_lablib in the code files.
+ * The current release on GitHub is `v0.6.2`, but the document that comes up says `Release 7.1`
+ * My best guess is that the current version and the git tag started at v0.6.2,
+ * but have been further developed and is now at v0.7.1.
+ * 
+ * Therefore, I'm setting the USB device version at 0.71
+ */
+#define USB_DEV   0x0071
 
 //--------------------------------------------------------------------+
 // Device Descriptors
@@ -56,7 +80,7 @@ tusb_desc_device_t const desc_device =
 
     .idVendor           = USB_VID,
     .idProduct          = USB_PID,
-    .bcdDevice          = USB_BCD,
+    .bcdDevice          = USB_DEV,
 
     .iManufacturer      = 0x01,
     .iProduct           = 0x02,
