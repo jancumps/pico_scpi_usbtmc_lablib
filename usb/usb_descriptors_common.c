@@ -37,8 +37,25 @@
 #define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
                            _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
 
+#ifndef USB_VID
 #define USB_VID   0xCafe
+#endif
+
+#ifndef USB_BCD
 #define USB_BCD   0x0200
+#endif
+
+#ifndef USB_MANUFACTURER
+#define USB_MANUFACTURER 0x01
+#endif
+
+#ifndef USB_PRODUCT
+#define USB_PRODUCT 0x02
+#endif
+
+#ifndef USB_SERIALNUMBER
+#define USB_SERIALNUMBER 0x03
+#endif
 
 //--------------------------------------------------------------------+
 // Device Descriptors
@@ -58,9 +75,9 @@ tusb_desc_device_t const desc_device =
     .idProduct          = USB_PID,
     .bcdDevice          = USB_BCD,
 
-    .iManufacturer      = 0x01,
-    .iProduct           = 0x02,
-    .iSerialNumber      = 0x03,
+    .iManufacturer      = USB_MANUFACTURER,
+    .iProduct           = USB_PRODUCT,
+    .iSerialNumber      = USB_SERIALNUMBER,
 
     .bNumConfigurations = 0x01
 };
