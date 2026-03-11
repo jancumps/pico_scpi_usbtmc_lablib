@@ -27,6 +27,10 @@
 #include "class/usbtmc/usbtmc.h"
 #include "usb/usbtmc_device_custom.h"
 
+#ifndef USB_PID
+#define USB_PID           0x4000
+#endif
+
 /* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
  *
@@ -34,23 +38,23 @@
  *   [MSB]         HID | MSC | CDC          [LSB]
  */
 #define _PID_MAP(itf, n)  ( (CFG_TUD_##itf) << (n) )
-#define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
-                           _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
+#define USB_PID_MAPPED    (USB_PID | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
+                              _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
 
 #ifndef USB_VID
-#define USB_VID   0xCafe
+#define USB_VID           0xCafe
 #endif
 
 #ifndef USB_MANUFACTURER
-#define USB_MANUFACTURER 0x01
+#define USB_MANUFACTURER  0x01
 #endif
 
 #ifndef USB_PRODUCT
-#define USB_PRODUCT 0x02
+#define USB_PRODUCT       0x02
 #endif
 
 #ifndef USB_SERIALNUMBER
-#define USB_SERIALNUMBER 0x03
+#define USB_SERIALNUMBER  0x03
 #endif
 
 //--------------------------------------------------------------------+
@@ -68,7 +72,7 @@ tusb_desc_device_t const desc_device =
     .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
 
     .idVendor           = USB_VID,
-    .idProduct          = USB_PID,
+    .idProduct          = USB_PID_MAPPED,
     .bcdDevice          = USB_BCD,
 
     .iManufacturer      = USB_MANUFACTURER,
