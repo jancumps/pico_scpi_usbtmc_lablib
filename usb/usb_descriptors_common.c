@@ -27,6 +27,10 @@
 #include "class/usbtmc/usbtmc.h"
 #include "usb/usbtmc_device_custom.h"
 
+#ifndef USB_PID
+#define USB_PID           0x4000
+#endif
+
 /* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
  *
@@ -34,11 +38,28 @@
  *   [MSB]         HID | MSC | CDC          [LSB]
  */
 #define _PID_MAP(itf, n)  ( (CFG_TUD_##itf) << (n) )
-#define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
-                           _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
+#define USB_PID_MAPPED    (USB_PID | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
+                              _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
 
-#define USB_VID   0xCafe
+#ifndef USB_VID
+#define USB_VID           0xCafe
+#endif
+
+#ifndef USB_BCD
 #define USB_BCD   0x0200
+#endif
+
+#ifndef USB_MANUFACTURER
+#define USB_MANUFACTURER  0x01
+#endif
+
+#ifndef USB_PRODUCT
+#define USB_PRODUCT       0x02
+#endif
+
+#ifndef USB_SERIALNUMBER
+#define USB_SERIALNUMBER  0x03
+#endif
 
 //--------------------------------------------------------------------+
 // Device Descriptors
@@ -47,7 +68,7 @@ tusb_desc_device_t const desc_device =
 {
     .bLength            = sizeof(tusb_desc_device_t),
     .bDescriptorType    = TUSB_DESC_DEVICE,
-    .bcdUSB             = 0x0200,
+    .bcdUSB             = USB_BCD,
     .bDeviceClass       = 0x00,
     .bDeviceSubClass    = 0x00,
     .bDeviceProtocol    = 0x00,
@@ -55,12 +76,12 @@ tusb_desc_device_t const desc_device =
     .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
 
     .idVendor           = USB_VID,
-    .idProduct          = USB_PID,
+    .idProduct          = USB_PID_MAPPED,
     .bcdDevice          = USB_BCD,
 
-    .iManufacturer      = 0x01,
-    .iProduct           = 0x02,
-    .iSerialNumber      = 0x03,
+    .iManufacturer      = USB_MANUFACTURER,
+    .iProduct           = USB_PRODUCT,
+    .iSerialNumber      = USB_SERIALNUMBER,
 
     .bNumConfigurations = 0x01
 };
