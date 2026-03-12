@@ -45,6 +45,10 @@
 #define USB_VID           0xCafe
 #endif
 
+#ifndef USB_BCD
+#define USB_BCD   0x0200
+#endif
+
 #ifndef USB_MANUFACTURER
 #define USB_MANUFACTURER  0x01
 #endif
