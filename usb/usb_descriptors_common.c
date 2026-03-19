@@ -49,6 +49,10 @@
 #define USB_BCD   0x0200
 #endif
 
+#ifndef FW_VER_BCD
+#define FW_VER_BCD  0x0100
+#endif
+
 #ifndef USB_MANUFACTURER
 #define USB_MANUFACTURER  0x01
 #endif
@@ -77,7 +81,7 @@ tusb_desc_device_t const desc_device =
 
     .idVendor           = USB_VID,
     .idProduct          = USB_PID_MAPPED,
-    .bcdDevice          = USB_BCD,
+    .bcdDevice          = FW_VER_BCD,
 
     .iManufacturer      = USB_MANUFACTURER,
     .iProduct           = USB_PRODUCT,
